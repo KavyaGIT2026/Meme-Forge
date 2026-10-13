@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemeForge Gen Z</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b;
+            color: #fafafa;
+            overflow-x: hidden;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+        /* Meme Text specific styles */
+        .meme-text {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            line-height: 1.1;
+            -webkit-text-stroke: 2px black;
+            paint-order: stroke fill;
+            font-size: clamp(2rem, 6vw, 4rem);
+            text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        }
+
+        /* Custom Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(2rem); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 50% { opacity: .5; } }
+
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-slide-up { animation: slideInUp 0.5s ease-out forwards; }
+        .animate-zoom-in { animation: zoomIn 0.3s ease-out forwards; }
+        .animate-spin-custom { animation: spin 1s linear infinite; }
+        .animate-pulse-custom { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        .columns-responsive { column-count: 2; column-gap: 1rem; }
+        @media (min-width: 640px) { .columns-responsive { column-count: 3; } }
+        @media (min-width: 768px) { .columns-responsive { column-count: 4; } }
+        @media (min-width: 1024px) { .columns-responsive { column-count: 5; } }
+        
+        .break-inside-avoid { break-inside: avoid; margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="selection:bg-lime-400/30">
+
+    <header class="fixed top-0 w-full z-40 bg-zinc-950/60 backdrop-blur-xl border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-black text-2xl tracking-tighter cursor-pointer hover:scale-105 transition-transform" onclick="switchTab('cook')">
+                <i data-lucide="flame" class="text-purple-500 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]" fill="currentColor" width="28" height="28"></i>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-lime-400">
+                    MEMEFORGE
+                </span>
+            </div>
+            
+            <div class="flex bg-white/5 backdrop-blur-md rounded-full p-1 border border-white/10 shadow-inner overflow-x-auto custom-scrollbar">
+                <button id="tab-cook" onclick="switchTab('cook')" class="px-4 sm:px-5 py-2 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2 whitespace-nowrap bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+                    <i data-lucide="wand-2" width="16" height="16"></i> Cook 🧑‍🍳
+                </button>
+                <button id="tab-discover" onclick="switchTab('discover')" class="px-4 sm:px-5 py-2 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2 whitespace-nowrap text-zinc-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="search" width="16" height="16"></i> Discover 🔍
+                </button>
+                <button id="tab-vault" onclick="switchTab('vault')" class="px-4 sm:px-5 py-2 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2 whitespace-nowrap text-zinc-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="archive" width="16" height="16"></i> Vault 🗄️
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 pt-28 pb-12">
+        
+        <!-- COOK TAB -->
+        <div id="view-cook" class="animate-slide-up">
+            <div class="max-w-2xl mx-auto space-y-10">
+                <div class="text-center space-y-3">
+                    <h1 class="text-5xl md:text-6xl font-black tracking-tighter">
+                        Let him <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-purple-500">cook.</span>
+                    </h1>
+                    <p class="text-zinc-400 text-lg">Drop a keyword, or Meme topic below. 🧢</p>
+                </div>
+
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-lime-400 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    
+                    <div class="relative bg-zinc-900/80 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex flex-col gap-3">
+                        
+                        <!-- YOUTUBE INTEGRATION TOGGLE -->
+                        <div class="flex items-center gap-2 px-2 pb-2 border-b border-white/10">
+                            <input type="checkbox" id="yt-toggle" class="w-4 h-4 accent-red-500 rounded cursor-pointer" checked>
+                            <label for="yt-toggle" class="text-sm font-bold text-zinc-300 cursor-pointer flex items-center gap-2">
+                                <i data-lucide="youtube" class="text-red-500" width="18" height="18"></i> Use YouTube Data for Context
+                            </label>
+                        </div>
+
+                        <textarea id="scenario-input" placeholder="e.g., POV: You check your bank account, OR a keyword like 'GTA 6 Trailer'" class="w-full bg-transparent p-2 text-zinc-100 placeholder-zinc-500 focus:outline-none resize-none h-24 text-lg font-medium"></textarea>
+                        
+                        <button id="btn-generate" onclick="handleGenerateMeme()" class="w-full bg-lime-400 hover:bg-lime-300 text-zinc-950 font-black uppercase tracking-widest py-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 overflow-hidden relative opacity-50 cursor-not-allowed" disabled>
+                            <i data-lucide="sparkles" width="22" height="22" id="icon-generate-idle"></i>
+                            <i data-lucide="loader-2" width="22" height="22" class="animate-spin-custom hidden" id="icon-generate-loading"></i>
+                            <span id="text-generate">Generate Meme</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="gen-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl text-center font-medium animate-zoom-in"></div>
+
+                <div id="generated-meme-container" class="hidden animate-zoom-in pt-8 flex flex-col items-center">
+                    <div class="inline-block px-4 py-1 mb-6 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-sm font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                        Fresh out the oven 🔥
+                    </div>
+                    <div id="generated-meme-preview" class="w-full max-w-lg"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISCOVER TAB -->
+        <div id="view-discover" class="hidden animate-slide-up">
+            <div class="space-y-8">
+                <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                    <div>
+                        <h1 class="text-4xl font-black tracking-tighter mb-2">Meme Finder 📦</h1>
+                        <p class="text-zinc-400">Search for classic templates or YouTube formats.</p>
+                    </div>
+                    
+                    <div class="flex flex-col w-full md:w-auto gap-3">
+                        <!-- YOUTUBE / TEMPLATE TOGGLE -->
+                        <div class="flex bg-white/5 p-1 rounded-xl border border-white/10 w-full md:w-64">
+                            <button id="toggle-memes" onclick="setDiscoverMode('memes')" class="flex-1 py-2 text-sm font-bold rounded-lg bg-lime-400 text-zinc-900 transition-colors">Templates</button>
+                            <button id="toggle-yt" onclick="setDiscoverMode('yt')" class="flex-1 py-2 text-sm font-bold rounded-lg text-zinc-400 hover:text-white transition-colors">YouTube</button>
+                        </div>
+
+                        <div class="relative w-full group">
+                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-lime-400 transition-colors" width="20" height="20"></i>
+                            <input type="text" id="search-memes" placeholder="Search Templates..." class="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-zinc-100 placeholder-zinc-500 focus:bg-white/10 focus:border-lime-400/50 focus:ring-1 focus:ring-lime-400/50 outline-none transition-all backdrop-blur-md font-medium">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="discover-loading" class="flex flex-col items-center justify-center py-32 text-zinc-500 gap-4">
+                    <i data-lucide="loader-2" class="animate-spin-custom text-lime-400" width="40" height="40"></i>
+                    <p class="font-bold uppercase tracking-widest text-sm">Fetching content...</p>
+                </div>
+
+                <div id="discover-grid" class="columns-responsive hidden">
+                    <!-- Memes injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VAULT TAB -->
+        <div id="view-vault" class="hidden animate-slide-up">
+            <div class="space-y-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="flex flex-col gap-2">
+                        <h1 class="text-4xl font-black tracking-tighter">The Vault 🗄️</h1>
+                        <p class="text-zinc-400">Your legendary creations and downloads from this session.</p>
+                    </div>
+                    <button id="btn-clear-vault" onclick="handleClearVault()" class="hidden items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 px-4 py-2 rounded-xl transition-colors font-bold text-sm uppercase tracking-widest hover:scale-105">
+                        <i data-lucide="trash-2" width="16" height="16"></i>
+                        <span id="text-clear-vault">Clear Vault</span>
+                    </button>
+                </div>
+
+                <div id="vault-empty" class="flex flex-col items-center justify-center py-32 text-zinc-500 gap-4 border-2 border-dashed border-white/10 rounded-2xl bg-white/5">
+                    <i data-lucide="archive" width="48" height="48" class="text-zinc-700 mb-2"></i>
+                    <p class="font-bold uppercase tracking-widest text-sm text-center">It's quiet in here...</p>
+                    <button onclick="switchTab('cook')" class="text-lime-400 hover:text-lime-300 underline font-medium mt-2">
+                        Go cook something up 🔥
+                    </button>
+                </div>
+
+                <div id="vault-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Vault memes injected here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- EDIT MODAL -->
+    <div id="modal-edit" class="fixed inset-0 z-50 items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-xl animate-fade-in hidden">
+        <div class="bg-zinc-900 border border-white/10 rounded-3xl w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative max-h-[90vh]">
+            
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/50 hover:bg-black/80 backdrop-blur-md text-white p-2 rounded-full transition-colors border border-white/10">
+                <i data-lucide="x" width="20" height="20"></i>
+            </button>
+
+            <div class="w-full lg:w-3/5 bg-zinc-950/50 p-4 md:p-8 flex items-center justify-center overflow-y-auto custom-scrollbar">
+                 <div id="modal-preview-container" class="w-full max-w-lg">
+                    <!-- Preview injected here -->
+                 </div>
+            </div>
+
+            <div class="w-full lg:w-2/5 p-6 md:p-8 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col justify-center gap-6 bg-zinc-900/50">
+                <div>
+                    <div class="inline-block px-3 py-1 mb-3 rounded-full bg-lime-400/20 text-lime-400 border border-lime-400/30 text-xs font-bold tracking-widest uppercase shadow-[0_0_10px_rgba(163,230,53,0.2)]">
+                        Edit Mode ✍️
+                    </div>
+                    <h3 id="modal-title" class="text-2xl font-black mb-2 leading-tight">Template Name</h3>
+                    <p class="text-sm text-zinc-400">Make it legendary. Keep it short.</p>
+                </div>
+
+                <div class="space-y-5">
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-zinc-500 uppercase tracking-widest">Top Text</label>
+                        <input type="text" id="modal-top-text" class="w-full bg-zinc-950 border border-white/10 rounded-xl p-4 text-white focus:border-lime-400/50 focus:ring-1 focus:ring-lime-400/50 outline-none uppercase font-black text-lg transition-all" placeholder="TOP TEXT">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-zinc-500 uppercase tracking-widest">Bottom Text</label>
+                        <input type="text" id="modal-bottom-text" class="w-full bg-zinc-950 border border-white/10 rounded-xl p-4 text-white focus:border-lime-400/50 focus:ring-1 focus:ring-lime-400/50 outline-none uppercase font-black text-lg transition-all" placeholder="BOTTOM TEXT">
+                    </div>
+                </div>
+
+                <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                     <button onclick="saveAndVaultMeme()" class="flex-1 bg-lime-400 hover:bg-lime-300 text-zinc-950 font-black uppercase tracking-widest py-4 px-4 rounded-xl transition-transform hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(163,230,53,0.3)]">
+                        <i data-lucide="download" width="20" height="20"></i>
+                        Save & Vault
+                    </button>
+                    <button onclick="closeModal()" class="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-4 px-4 rounded-xl transition-colors border border-white/10">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        // ==========================================
+        // API KEYS 
+        // ==========================================
+        const YOUTUBE_API_KEY = 'AIzaSyDSGriCHRDe4mpZnZQ20QzMW6Hdt-_88Fw'; 
+        
+        const IMGFLIP_API = 'https://api.imgflip.com/get_memes';
+        
+        const GROQ_KEYS = [
+            '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',
+            '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'
+        ];
+        let currentGroqKeyIdx = 0;
+
+        const LOADING_MESSAGES = [
+            "Scraping YouTube Drama... 📺",
+            "Consulting the meme lords... 🧙‍♂️",
+            "Translating to Gen Z brainrot... 🧢",
+            "Vibing with the AI... 🤖",
+            "Rendering the masterpiece... 🎨"
+        ];
+
+        let state = {
+            activeTab: 'cook',
+            discoverMode: 'memes', // 'memes' or 'yt'
+            vaultMemes: [],
+            isGenerating: false,
+            loadingMsgIdx: 0,
+            generatedMeme: null,
+            memes: [],
+            ytTemplates: [],
+            searchQuery: '',
+            selectedTemplate: null,
+            customTopText: 'ME AF',
+            customBottomText: 'WHEN THE BUGS HIT'
+        };
+
+        let loadingInterval;
+        let confirmClearVaultStep = 0;
+        let searchTimeout = null;
+
+        function init() {
+            try {
+                const saved = localStorage.getItem('memeForgeVault');
+                if (saved) state.vaultMemes = JSON.parse(saved);
+            } catch (e) { console.warn("Vault storage error:", e); }
+
+            document.getElementById('scenario-input').addEventListener('input', (e) => {
+                const btn = document.getElementById('btn-generate');
+                if (e.target.value.trim() !== '' && !state.isGenerating) {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            });
+
+            document.getElementById('search-memes').addEventListener('input', (e) => {
+                state.searchQuery = e.target.value;
+                if(searchTimeout) clearTimeout(searchTimeout);
+                
+                searchTimeout = setTimeout(() => {
+                    if (state.discoverMode === 'memes') {
+                        renderDiscoverGrid();
+                    } else if (state.discoverMode === 'yt') {
+                        if (state.searchQuery.trim() !== '') {
+                            fetchYouTubeTemplates();
+                        } else {
+                            state.ytTemplates = [];
+                            renderDiscoverGrid();
+                        }
+                    }
+                }, 500);
+            });
+
+            document.getElementById('modal-top-text').addEventListener('input', (e) => {
+                state.customTopText = e.target.value;
+                updateModalPreview();
+            });
+
+            document.getElementById('modal-bottom-text').addEventListener('input', (e) => {
+                state.customBottomText = e.target.value;
+                updateModalPreview();
+            });
+
+            lucide.createIcons();
+            renderVaultGrid();
+        }
+
+        function showToast(message, type = 'error') {
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-xl shadow-lg border backdrop-blur-md animate-slide-up flex items-center gap-3 text-sm font-bold ${
+                type === 'error' ? 'bg-red-500/20 border-red-500/50 text-red-200' : 'bg-lime-500/20 border-lime-500/50 text-lime-200'
+            }`;
+            toast.innerHTML = `<i data-lucide="${type === 'error' ? 'alert-triangle' : 'check-circle'}" width="18" height="18"></i> <span>${message}</span>`;
+            document.getElementById('toast-container').appendChild(toast);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(1rem)';
+                toast.style.transition = 'all 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function switchTab(tab) {
+            state.activeTab = tab;
+            const tabs = ['cook', 'discover', 'vault'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const view = document.getElementById(`view-${t}`);
+                if (t === tab) {
+                    btn.className = `px-4 sm:px-5 py-2 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2 whitespace-nowrap ${
+                        t === 'cook' ? 'bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 
+                        t === 'discover' ? 'bg-lime-400 text-zinc-900 shadow-[0_0_15px_rgba(163,230,53,0.4)]' : 
+                        'bg-zinc-100 text-zinc-900 shadow-[0_0_15px_rgba(255,255,255,0.4)]'
+                    }`;
+                    view.classList.remove('hidden');
+                } else {
+                    btn.className = `px-4 sm:px-5 py-2 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2 whitespace-nowrap text-zinc-400 hover:text-white hover:bg-white/5`;
+                    view.classList.add('hidden');
+                }
+            });
+
+            if (tab === 'discover') {
+                if (state.discoverMode === 'memes' && state.memes.length === 0) fetchMemes();
+                else if (state.discoverMode === 'yt' && state.searchQuery && state.ytTemplates.length === 0) fetchYouTubeTemplates();
+            }
+            if (tab === 'vault') {
+                renderVaultGrid();
+            }
+        }
+
+        function setDiscoverMode(mode) {
+            state.discoverMode = mode;
+            const btnMemes = document.getElementById('toggle-memes');
+            const btnYt = document.getElementById('toggle-yt');
+            const searchInput = document.getElementById('search-memes');
+            
+            if (mode === 'memes') {
+                btnMemes.className = "flex-1 py-2 text-sm font-bold rounded-lg bg-lime-400 text-zinc-900 transition-colors";
+                btnYt.className = "flex-1 py-2 text-sm font-bold rounded-lg text-zinc-400 hover:text-white transition-colors";
+                searchInput.placeholder = "Search Templates...";
+                if (state.memes.length === 0) fetchMemes(); else renderDiscoverGrid();
+            } else {
+                btnYt.className = "flex-1 py-2 text-sm font-bold rounded-lg bg-lime-400 text-zinc-900 transition-colors";
+                btnMemes.className = "flex-1 py-2 text-sm font-bold rounded-lg text-zinc-400 hover:text-white transition-colors";
+                searchInput.placeholder = "Search YouTube for formats...";
+                if (state.searchQuery.trim() !== '') fetchYouTubeTemplates(); else renderDiscoverGrid();
+            }
+        }
+
+        function createMemeHTML(id, image, topText, bottomText, context) {
+            const escapedTop = (topText || "").replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const escapedBottom = (bottomText || "").replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            
+            let buttons = '';
+            if (context === 'vault') {
+                buttons = `
+                <div class="absolute top-4 right-4 z-20 opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button onclick="deleteFromVault('${id}')" class="bg-red-500/80 backdrop-blur-md hover:bg-red-500 text-white p-2 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-transform hover:scale-110 flex items-center justify-center" title="Delete from Vault">
+                        <i data-lucide="trash-2" width="20" height="20"></i>
+                    </button>
+                </div>
+                <div class="absolute bottom-4 right-4 z-20 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button onclick="triggerDownload('${image}', \`${escapedTop}\`, \`${escapedBottom}\`, 'memeforge-${id}.png')" class="bg-lime-400 hover:bg-lime-300 text-zinc-900 p-3 rounded-full shadow-[0_0_15px_rgba(163,230,53,0.5)] transition-transform hover:scale-110 flex items-center justify-center" title="Save this masterpiece">
+                        <i data-lucide="download" width="24" height="24"></i>
+                    </button>
+                </div>`;
+            } else if (context === 'cook') {
+                 buttons = `
+                 <div class="absolute bottom-4 right-4 z-20 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button onclick="triggerDownload('${image}', \`${escapedTop}\`, \`${escapedBottom}\`, 'memeforge-${id}.png')" class="bg-lime-400 hover:bg-lime-300 text-zinc-900 p-3 rounded-full shadow-[0_0_15px_rgba(163,230,53,0.5)] transition-transform hover:scale-110 flex items-center justify-center" title="Save this masterpiece">
+                        <i data-lucide="download" width="24" height="24"></i>
+                    </button>
+                </div>`;
+            }
+
+            return `
+            <div class="relative group w-full max-w-lg mx-auto rounded-2xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(163,230,53,0.3)] border border-white/10 bg-zinc-900 transition-transform duration-500 hover:scale-[1.02] animate-zoom-in">
+                <div class="relative w-full aspect-square flex items-center justify-center bg-zinc-950">
+                    <img src="${image}" alt="Meme" class="w-full h-full object-cover" crossorigin="anonymous" />
+                    <div class="absolute inset-0 flex flex-col justify-between p-6 pointer-events-none select-none text-center z-10">
+                        <h2 class="text-white uppercase break-words drop-shadow-2xl meme-text">${escapedTop}</h2>
+                        <h2 class="text-white uppercase break-words drop-shadow-2xl meme-text">${escapedBottom}</h2>
+                    </div>
+                </div>
+                ${buttons}
+            </div>`;
+        }
+
+        async function fetchYouTubeData(query) {
+            try {
+                // Fetch search results based on query for context (Cook Tab)
+                const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`;
+                const searchRes = await fetch(searchUrl);
+                if (!searchRes.ok) return query; // Fallback if YouTube quota exceeded
+                
+                const searchData = await searchRes.json();
+                
+                if (searchData.items && searchData.items.length > 0) {
+                    let combinedContext = `Topic: "${query}"\n\n`;
+                    
+                    const videoIds = searchData.items.map(item => item.id.videoId).filter(id => id).join(',');
+                    if (videoIds) {
+                        const videoUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${videoIds}&key=${YOUTUBE_API_KEY}`;
+                        const videoRes = await fetch(videoUrl);
+                        if (videoRes.ok) {
+                            const videoData = await videoRes.json();
+                            videoData.items.forEach((details, i) => {
+                                combinedContext += `Video ${i+1}: "${details.snippet.title}"\n`;
+                                combinedContext += `Views: ${details.statistics.viewCount || 0}, Likes: ${details.statistics.likeCount || 0}\n\n`;
+                            });
+                            return `Create a highly relevant meme based on this YouTube context:\n${combinedContext}`;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("YouTube API Error:", error);
+            }
+            return query; 
+        }
+
+        async function handleGenerateMeme() {
+            const scenarioInput = document.getElementById('scenario-input');
+            let scenario = scenarioInput.value.trim();
+            if (!scenario) return;
+
+            const useYouTube = document.getElementById('yt-toggle').checked;
+
+            state.isGenerating = true;
+            scenarioInput.disabled = true;
+            document.getElementById('gen-error').classList.add('hidden');
+            document.getElementById('generated-meme-container').classList.add('hidden');
+            
+            const btn = document.getElementById('btn-generate');
+            const btnText = document.getElementById('text-generate');
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('icon-generate-idle').classList.add('hidden');
+            document.getElementById('icon-generate-loading').classList.remove('hidden');
+            
+            state.loadingMsgIdx = 0;
+            btnText.classList.add('animate-pulse-custom');
+            btnText.textContent = LOADING_MESSAGES[0];
+            
+            loadingInterval = setInterval(() => {
+                state.loadingMsgIdx = (state.loadingMsgIdx + 1) % LOADING_MESSAGES.length;
+                btnText.textContent = LOADING_MESSAGES[state.loadingMsgIdx];
+            }, 2000);
+
+            try {
+                // YT INTEGRATION 
+                if(useYouTube) {
+                    scenario = await fetchYouTubeData(scenario);
+                }
+
+                const systemPrompt = `You are an expert, highly viral Gen Z meme creator. 
+The user will provide a scenario, keyword, or YouTube context. 
+You MUST generate a highly relevant, funny meme based EXACTLY on their input.
+Format your response strictly as follows, separated by the "|" character:
+TOP TEXT | BOTTOM TEXT | IMAGE PROMPT
+
+RULES:
+1. TOP TEXT: Short, punchy setup (max 7 words).
+2. BOTTOM TEXT: Hilarious punchline (max 7 words).
+3. IMAGE PROMPT: A detailed visual description of the background image ONLY. DO NOT include any text, letters, or words in the image prompt. Describe a humorous visual scene.
+4. ABSOLUTELY NO other output, no markdown, no conversational filler. Just the three parts separated by "|".`;
+
+                let apiSuccess = false;
+                let aiResponseText = "";
+
+                for (let i = 0; i < GROQ_KEYS.length; i++) {
+                    const keyToTry = GROQ_KEYS[(currentGroqKeyIdx + i) % GROQ_KEYS.length];
+                    try {
+                        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${keyToTry}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                model: 'llama-3.3-70b-versatile',
+                                messages: [
+                                    { role: 'system', content: systemPrompt },
+                                    { role: 'user', content: scenario }
+                                ],
+                                temperature: 0.7
+                            })
+                        });
+
+                        if (res.ok) {
+                            currentGroqKeyIdx = (currentGroqKeyIdx + i) % GROQ_KEYS.length;
+                            const data = await res.json();
+                            aiResponseText = data.choices[0].message.content;
+                            apiSuccess = true;
+                            break; 
+                        }
+                    } catch (e) {
+                        console.warn(`Network error with Groq API key:`, e);
+                    }
+                }
+
+                if (!apiSuccess) {
+                    try {
+                        const fallbackRes = await fetch('https://text.pollinations.ai/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                messages: [
+                                    { role: 'system', content: systemPrompt },
+                                    { role: 'user', content: scenario }
+                                ]
+                            })
+                        });
+                        
+                        if (fallbackRes.ok) {
+                            aiResponseText = await fallbackRes.text();
+                            apiSuccess = true;
+                        }
+                    } catch (e) {
+                        console.error("Fallback AI failed:", e);
+                    }
+                }
+
+                if (!apiSuccess || !aiResponseText) {
+                    throw new Error("All our AI meme chefs are busy. Try again soon! 💀");
+                }
+
+                // Safely parse text without breaking JavaScript Regex string literals
+                let cleanText = aiResponseText.replace(/```[a-zA-Z]*\n?/gi, '').replace(/```/g, '').trim();
+                cleanText = cleanText.replace(/\*\*/g, '');
+                
+                const pipeLines = cleanText.split('\n').filter(line => line.includes('|'));
+                if (pipeLines.length > 0) cleanText = pipeLines[0]; 
+
+                const parts = cleanText.split('|').map(s => s.trim().replace(/^"|"$/g, ''));
+                
+                let topText = "ME AF";
+                let bottomText = "WHEN THE BUGS HIT";
+                let imagePrompt = scenario; 
+
+                if (parts.length >= 3) {
+                    topText = parts[0];
+                    bottomText = parts[1];
+                    imagePrompt = parts.slice(2).join(" ") + ", photographic meme background, funny visual scene, no text, empty template, highly detailed";
+                } else if (parts.length === 2) {
+                    topText = parts[0];
+                    imagePrompt = parts[1] + ", photographic meme background, no text, empty template";
+                } else {
+                    topText = "POV:";
+                    bottomText = cleanText.substring(0, 40).toUpperCase();
+                    imagePrompt = scenario + ", photographic meme background, no text, empty template";
+                }
+
+                const seed = Math.floor(Math.random() * 1000000);
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=800&height=800&nologo=true&enhance=false&seed=${seed}`;
+
+                const newMeme = {
+                    id: Date.now().toString(),
+                    image: imageUrl,
+                    topText: topText.toUpperCase(),
+                    bottomText: bottomText.toUpperCase()
+                };
+
+                state.generatedMeme = newMeme;
+                addToVault(newMeme);
+
+                const previewContainer = document.getElementById('generated-meme-preview');
+                previewContainer.innerHTML = createMemeHTML(newMeme.id, newMeme.image, newMeme.topText, newMeme.bottomText, 'cook');
+                document.getElementById('generated-meme-container').classList.remove('hidden');
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error(error);
+                const errDiv = document.getElementById('gen-error');
+                errDiv.textContent = error.message || "Something went wrong in the kitchen. No cap.";
+                errDiv.classList.remove('hidden');
+            } finally {
+                state.isGenerating = false;
+                clearInterval(loadingInterval);
+                scenarioInput.disabled = false;
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                document.getElementById('icon-generate-loading').classList.add('hidden');
+                document.getElementById('icon-generate-idle').classList.remove('hidden');
+                btnText.classList.remove('animate-pulse-custom');
+                btnText.textContent = "Generate Meme";
+            }
+        }
+
+        // ==========================================
+        // DISCOVER: Fetch Memes & YT Templates
+        // ==========================================
+        async function fetchMemes() {
+            document.getElementById('discover-loading').classList.remove('hidden');
+            document.getElementById('discover-grid').classList.add('hidden');
+            
+            try {
+                const res = await fetch(IMGFLIP_API);
+                const data = await res.json();
+                if (data.success) {
+                    state.memes = data.data.memes;
+                    renderDiscoverGrid();
+                }
+            } catch (error) {
+                showToast("Failed to load classic memes.", "error");
+            } finally {
+                document.getElementById('discover-loading').classList.add('hidden');
+            }
+        }
+
+        async function fetchYouTubeTemplates() {
+            if (!state.searchQuery.trim()) return;
+            
+            document.getElementById('discover-loading').classList.remove('hidden');
+            document.getElementById('discover-grid').classList.add('hidden');
+            
+            try {
+                const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${encodeURIComponent(state.searchQuery + ' meme template')}&type=video&key=${YOUTUBE_API_KEY}`;
+                const res = await fetch(searchUrl);
+                if (!res.ok) throw new Error("YouTube API Error");
+                
+                const data = await res.json();
+                state.ytTemplates = (data.items || []).map(item => {
+                    const thumb = item.snippet.thumbnails.high || item.snippet.thumbnails.medium || item.snippet.thumbnails.default;
+                    return {
+                        id: item.id.videoId,
+                        url: thumb.url,
+                        name: item.snippet.title
+                    };
+                });
+                renderDiscoverGrid();
+            } catch (error) {
+                showToast("Failed to load YouTube templates.", "error");
+                document.getElementById('discover-loading').classList.add('hidden');
+            }
+        }
+
+        function renderDiscoverGrid() {
+            const grid = document.getElementById('discover-grid');
+            grid.innerHTML = '';
+            
+            let sourceArray = [];
+            if (state.discoverMode === 'memes') {
+                sourceArray = state.memes.filter(m => m.name.toLowerCase().includes(state.searchQuery.toLowerCase()));
+            } else {
+                sourceArray = state.ytTemplates;
+            }
+
+            // Show instruction for YT tab if empty query
+            if (state.discoverMode === 'yt' && state.searchQuery.trim() === '') {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500 font-bold uppercase tracking-widest">Type a keyword to pull YouTube formats 🔍</div>`;
+                grid.classList.remove('hidden');
+                document.getElementById('discover-loading').classList.add('hidden');
+                return;
+            }
+
+            if (sourceArray.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500 font-bold uppercase tracking-widest">No results found 💀</div>`;
+            } else {
+                let html = '';
+                sourceArray.forEach(meme => {
+                    html += `
+                    <div onclick="openModal('${meme.id}')" class="break-inside-avoid relative rounded-xl overflow-hidden cursor-pointer group bg-white/5 border border-white/10">
+                        <img src="${meme.url}" alt="${meme.name.replace(/"/g, '&quot;')}" loading="lazy" class="w-full object-cover transition-transform duration-500 group-hover:scale-110" crossorigin="anonymous" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                            <p class="text-sm font-black text-white leading-tight translate-y-4 group-hover:translate-y-0 transition-transform duration-300">${meme.name}</p>
+                        </div>
+                    </div>`;
+                });
+                grid.innerHTML = html;
+            }
+            
+            grid.classList.remove('hidden');
+            document.getElementById('discover-loading').classList.add('hidden');
+        }
+
+        function openModal(id) {
+            let item = null;
+            if (state.discoverMode === 'memes') {
+                item = state.memes.find(m => m.id === id);
+            } else {
+                item = state.ytTemplates.find(m => m.id === id);
+            }
+            
+            if (!item) return;
+            state.selectedTemplate = { url: item.url, name: item.name };
+            
+            state.customTopText = 'ME AF';
+            state.customBottomText = 'WHEN THE BUGS HIT';
+            
+            document.getElementById('modal-title').textContent = state.selectedTemplate.name;
+            document.getElementById('modal-top-text').value = state.customTopText;
+            document.getElementById('modal-bottom-text').value = state.customBottomText;
+            
+            updateModalPreview();
+            
+            const modal = document.getElementById('modal-edit');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal-edit');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            state.selectedTemplate = null;
+        }
+
+        function updateModalPreview() {
+            if (!state.selectedTemplate) return;
+            const container = document.getElementById('modal-preview-container');
+            container.innerHTML = createMemeHTML(
+                'preview', 
+                state.selectedTemplate.url, 
+                state.customTopText, 
+                state.customBottomText, 
+                'modal'
+            );
+        }
+
+        function saveAndVaultMeme() {
+            if (!state.selectedTemplate) return;
+            
+            const newMeme = {
+                id: Date.now().toString(),
+                image: state.selectedTemplate.url,
+                topText: state.customTopText,
+                bottomText: state.customBottomText
+            };
+            
+            triggerDownload(newMeme.image, newMeme.topText, newMeme.bottomText, `forged-${newMeme.id}.png`);
+            addToVault(newMeme);
+            closeModal();
+            showToast("Meme saved to Vault & downloading!", "success");
+        }
+
+        function addToVault(meme) {
+            state.vaultMemes.unshift(meme);
+            saveVault();
+        }
+
+        function deleteFromVault(id) {
+            state.vaultMemes = state.vaultMemes.filter(m => m.id !== id);
+            saveVault();
+            renderVaultGrid();
+        }
+
+        function handleClearVault() {
+            const btnText = document.getElementById('text-clear-vault');
+            if (confirmClearVaultStep === 0) {
+                btnText.textContent = "Are you sure?";
+                confirmClearVaultStep = 1;
+                setTimeout(() => {
+                    if (confirmClearVaultStep === 1) {
+                        confirmClearVaultStep = 0;
+                        btnText.textContent = "Clear Vault";
+                    }
+                }, 3000);
+            } else {
+                state.vaultMemes = [];
+                saveVault();
+                renderVaultGrid();
+                confirmClearVaultStep = 0;
+                btnText.textContent = "Clear Vault";
+                showToast("Vault completely wiped.", "success");
+            }
+        }
+
+        function saveVault() {
+            try { localStorage.setItem('memeForgeVault', JSON.stringify(state.vaultMemes)); } 
+            catch (e) { console.warn("Error saving vault:", e); }
+        }
+
+        function renderVaultGrid() {
+            const grid = document.getElementById('vault-grid');
+            const empty = document.getElementById('vault-empty');
+            const clearBtn = document.getElementById('btn-clear-vault');
+            
+            if (state.vaultMemes.length === 0) {
+                grid.classList.add('hidden');
+                empty.classList.remove('hidden');
+                clearBtn.classList.add('hidden');
+                clearBtn.classList.remove('flex');
+            } else {
+                empty.classList.add('hidden');
+                grid.classList.remove('hidden');
+                clearBtn.classList.remove('hidden');
+                clearBtn.classList.add('flex');
+                
+                let html = '';
+                state.vaultMemes.forEach(meme => {
+                    html += createMemeHTML(meme.id, meme.image, meme.topText, meme.bottomText, 'vault');
+                });
+                grid.innerHTML = html;
+                lucide.createIcons();
+            }
+        }
+
+        function triggerDownload(imageUrl, topText, bottomText, filename) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.crossOrigin = 'anonymous'; 
+            
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                const fontSize = Math.max(Math.floor(canvas.width / 10), 24);
+                ctx.fillStyle = 'white';
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = Math.max(Math.floor(fontSize / 8), 3);
+                ctx.textAlign = 'center';
+                ctx.font = `900 ${fontSize}px Impact, 'Arial Black', sans-serif`;
+                ctx.lineJoin = 'round';
+
+                const wrapText = (text, y, isBottom) => {
+                    if (!text) return;
+                    const words = text.split(' ');
+                    let line = '';
+                    const lines = [];
+                    const maxWidth = canvas.width - 40;
+
+                    for (let n = 0; n < words.length; n++) {
+                        const testLine = line + words[n] + ' ';
+                        const metrics = ctx.measureText(testLine);
+                        if (metrics.width > maxWidth && n > 0) {
+                            lines.push(line);
+                            line = words[n] + ' ';
+                        } else {
+                            line = testLine;
+                        }
+                    }
+                    lines.push(line);
+
+                    let startY = y;
+                    if (isBottom) startY = y - (lines.length - 1) * (fontSize * 1.1);
+
+                    lines.forEach((l, index) => {
+                        const drawY = startY + index * (fontSize * 1.1);
+                        ctx.strokeText(l, canvas.width / 2, drawY);
+                        ctx.fillText(l, canvas.width / 2, drawY);
+                    });
+                };
+
+                ctx.textBaseline = 'top';
+                wrapText(topText, 20, false);
+                
+                ctx.textBaseline = 'bottom';
+                wrapText(bottomText, canvas.height - 20, true);
+
+                try {
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = dataUrl;
+                    link.click();
+                } catch (e) {
+                    showToast("CORS blocked direct download. Right-click the image to save!", "error");
+                }
+            };
+            
+            img.onerror = () => { showToast("Failed to load image for download. Network issue.", "error"); };
+            img.src = imageUrl;
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
